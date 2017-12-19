@@ -17,15 +17,17 @@ import os
 
 class Bookmark():
     """ bookmark class """
-    def __init__(self, url,title='',tags=[],options=[]):
+    def __init__(self, **kwargs):
         
         self._fields = ['url','title','tags','options']
         
-        self.url = url
-        self.title = title
-        self.tags = tags
-        self.options = options
-    
+        for field in self._fields:
+            if field in kwargs:
+                setattr(self,field,kwargs[field])
+            else:
+                setattr(self,field,None)
+            
+     
     
     @classmethod
     def from_dict(cls, data):
@@ -49,13 +51,13 @@ class Bookmark():
         
         return cls(data['url'],**d)
     
-    def to_dict(self):
-        """ convert to dictionary. Includes only non-empty fields"""
+    def to_dict(self,full=False):
+        """ convert to dictionary. """
         data = []
         
         for field in self._fields:
             val = getattr(self,field)
-            if  val:
+            if  val or full:
                 if isinstance(val,list):
                     data.append((field,','.join(val)))
                 else:
@@ -73,8 +75,9 @@ class Bookmark():
         self.title = tree.findtext('.//title')
         
 #b = Bookmark.from_dict( {'url':'https://www.example.com/','options':'a,b,c'})
-#b.to_dict()
-
+#
+b = Bookmark(a=2,url='foo')
+b.to_dict()
 
 #%%
 
