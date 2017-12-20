@@ -59,18 +59,18 @@ class Bookmark():
     
     def to_dict(self,full=False):
         """ convert to dictionary. """
-        data = []
-        
-        for field in self._fields:
-            val = getattr(self,field)
-            if  val or full:
-                if isinstance(val,list):
-                    data.append((field,','.join(val)))
-                else:
-                    data.append((field,val))
-        
-        return dict(data)
+                
+        return pack(self._data)
      
+    
+    def __getattr__(self,attr):
+        
+        if attr in self._data:
+            return self._data[attr]
+        
+        
+    def __repr__(self):
+        return str(self._data)
     
     
     def updateTitle(self):
@@ -78,7 +78,7 @@ class Bookmark():
         r = requests.get(self.url)
 
         tree = fromstring(r.content)
-        self.title = tree.findtext('.//title')
+        self._data['title'] = tree.findtext('.//title')
         
 #
 
