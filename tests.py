@@ -5,10 +5,13 @@ tests for bookmark tool
 
 @author: jev
 """
-from bookmarks import Bookmark,unpack,pack
+from bookmarks import Bookmark,unpack,pack,represent_ordereddict
 import yaml
 import os
 import pytest
+from collections import OrderedDict
+
+
 
 d = {'url':'http://www.example.com','title':'Test title','tags':'abc'}
 dataFile = 'data/bookmarks.yml'
@@ -44,6 +47,8 @@ def test_to_dict():
     b = Bookmark.from_dict(d)
     assert b.to_dict() == d
     
+    print(b.to_dict())
+    
 def test_attr():
     
     b = Bookmark.from_dict(d)
@@ -78,6 +83,8 @@ def updateTitles(B):
 def test_save():
     """ save back to yml"""
     B = test_load()
+    
+    updateTitles(B)
     
     p,f = os.path.split(dataFile)
     n,e = os.path.splitext(f)
