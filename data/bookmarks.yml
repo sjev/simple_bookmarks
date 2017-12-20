@@ -1,0 +1,11 @@
+- title: Example Domain
+  url: https://www.example.com/
+
+- url: https://raw.githubusercontent.com/pandas-dev/pandas/master/doc/source/10min.rst
+  tags: pandas,python,doc
+
+- url: https://www.backtrader.com/
+  tags: quant, backtest
+
+- url:  https://matplotlib.org/sampledoc/cheatsheet.html
+  tags: sphinx,python

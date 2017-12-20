@@ -6,8 +6,12 @@ tests for bookmark tool
 @author: jev
 """
 from bookmarks import Bookmark,unpack,pack
+import yaml
+import os
+import pytest
 
 d = {'url':'http://www.example.com','title':'Test title','tags':'abc'}
+dataFile = 'data/bookmarks.yml'
 
 def test_pacck_unpack():
     
@@ -46,10 +50,39 @@ def test_attr():
     assert b.url == d['url']
     
     assert b._data == unpack(d)
+        
+
+def test_load():
+    """ load from db """
     
-def test_update():
     
-    b = Bookmark.from_dict(d)
-    b.updateTitle()
+    data = yaml.load(open(dataFile,'r'))
     
-    assert b.title == 'Example Domain'
+    # create classes
+    B = [Bookmark.from_dict(d) for d in data]    
+    
+    
+    return B
+    
+def updateTitles(B):
+    
+    
+    # update titles
+    for b in B:
+        b.updateTitle()
+    
+    assert B[0].title == 'Example Domain'
+    
+    return B
+
+def test_save():
+    """ save back to yml"""
+    B = test_load()
+    
+    p,f = os.path.split(dataFile)
+    n,e = os.path.splitext(f)
+    dest = os.path.join(p,n+'_out'+e)
+    
+    data = [b.to_dict() for b in B]
+    
+    yaml.dump(data,open(dest,'w'),default_flow_style=False)

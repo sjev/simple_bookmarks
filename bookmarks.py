@@ -10,14 +10,14 @@ import yaml
 import requests
 from lxml.html import fromstring
 import os
-
+from collections import OrderedDict
 
 FIELDS = ['url','title','tags','options','notes']
 
 def unpack(d):
     """ unpack dict """
     
-    u = {}
+    u = OrderedDict()
     
     for field in FIELDS:
         u[field] = d[field] if field in d else None
@@ -92,6 +92,8 @@ if __name__ == "__main__":
     
     if not os.path.exists(dataDir):
         os.mkdir(dataDir)
+        
+    if not os.path.exists(dbFile):   
         b = Bookmark.from_dict( {'url':'https://www.example.com/'})
         b.updateTitle()
     
@@ -100,6 +102,8 @@ if __name__ == "__main__":
         with open(dbFile,'w') as fid:
             yaml.dump(data,stream=fid,default_flow_style=False)
         
+    # update titles
     
-
+    data = yaml.load(open(dbFile,'r'))
+    
 
