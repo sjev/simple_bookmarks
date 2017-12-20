@@ -12,6 +12,24 @@ from lxml.html import fromstring
 import os
 
 
+FIELDS = ['url','title','tags','options','notes']
+
+def unpack(d):
+    """ unpack dict """
+    
+    u = {}
+    
+    for field in FIELDS:
+        u[field] = d[field] if field in d else None
+
+    return u    
+
+def pack(u):
+    """ pack dict, return only valid entries """
+    
+    return dict((k,v) for k,v in u.items() if v)
+    
+    
 
 #%% 
 
@@ -19,13 +37,10 @@ class Bookmark():
     """ bookmark class """
     def __init__(self, **kwargs):
         
-        self._fields = ['url','title','tags','options']
         
-        for field in self._fields:
-            if field in kwargs:
-                setattr(self,field,kwargs[field])
-            else:
-                setattr(self,field,None)
+        assert 'url' in kwargs,  'Must provide bookmark url.'
+        self._data = unpack(kwargs)
+       
             
      
     
@@ -39,17 +54,8 @@ class Bookmark():
         data : dict
             data dictionary with keys url,title,tags,options. Only url is required
         """
-        d = {}
         
-        d['title'] = data['title'] if 'title' in data else ''
-        
-        
-        for k in ['tags','options']:
-            if k in data:
-                d[k] = [field.strip() for field in data[k].split(',')]
-        
-        
-        return cls(**d)
+        return cls(**data)
     
     def to_dict(self,full=False):
         """ convert to dictionary. """
@@ -74,7 +80,6 @@ class Bookmark():
         tree = fromstring(r.content)
         self.title = tree.findtext('.//title')
         
-b = Bookmark.from_dict( {'url':'https://www.example.com/','options':'a,b,c'})
 #
 
 #%%
